@@ -674,6 +674,19 @@ define Device/rosinson_wr818
 endef
 TARGET_DEVICES += rosinson_wr818
 
+define Device/ruckus_r500
+  ATH_SOC := qca9557
+  DEVICE_TITLE := Ruckus R500
+  IMAGE_SIZE := 25165k
+  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca988x-ct
+#  KERNEL_ENTRY := 0x8030d100
+#  KERNEL_LOADADDR := 0x80080000
+  KERNEL := kernel-bin | append-dtb
+  KERNEL_INITRAMFS := kernel-bin | append-dtb | uImage none
+  IMAGE/sysupgrade.bin := kernel-bin | append-dtb | lzma-no-dict | pad-to 1800000 | append-rootfs | pad-rootfs | pad-to 25165664 | check-size $$$$(IMAGE_SIZE)
+endef
+TARGET_DEVICES += ruckus_r500
+
 define Device/wd_mynet-n750
   $(Device/seama)
   ATH_SOC := ar9344
