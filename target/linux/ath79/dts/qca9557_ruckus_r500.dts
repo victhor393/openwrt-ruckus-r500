@@ -10,9 +10,60 @@
 	compatible = "ruckus,r500", "qca,qca9557";
 	model = "Ruckus R500";
 
+	aliases {
+		led-boot = &power;
+		led-failsafe = &power;
+		led-running = &power;
+		led-upgrade = &power;
+	};
 
 	chosen {
 		bootargs = "console=ttyS0,115200n8";
+	};
+
+	leds: leds {
+		compatible = "gpio-leds";
+
+		power: power {
+			label = "ruckus:red:power";
+			gpios = <&gpio 16 GPIO_ACTIVE_HIGH>;
+			default-state = "on";
+		};
+
+		dir {
+			label = "ruckus:green:dir";
+			gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
+		};
+
+		air {
+			label = "ruckus:green:air";
+			gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
+		};
+
+		wlan5g_green {
+			label = "ruckus:green:wlan5g";
+			gpios = <&gpio 21 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "phy0tpt";
+		};
+
+		wlan5g_orange {
+			label = "ruckus:orange:wlan5g";
+			gpios = <&gpio 22 GPIO_ACTIVE_LOW>;
+		};
+
+	};
+
+	keys: keys {
+		compatible = "gpio-keys-polled";
+		poll-interval = <20>;
+
+		reset {
+			label = "reset";
+			gpios = <&gpio 0 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_RESTART>;
+			debounce-interval = <60>;
+		};
+
 	};
 
 };
@@ -105,7 +156,7 @@
 
 	mtd-mac-address = <&art 0x6c>;
 	pll-data = <0x03000101 0x00000101 0x00001616>;
-
+	
 	fixed-link {
 		speed = <1000>;
 		full-duplex;
