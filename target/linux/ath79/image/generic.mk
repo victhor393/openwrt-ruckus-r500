@@ -103,6 +103,7 @@ define Device/avm_fritz300e
 	append-squashfs-fakeroot-be | pad-to 256 | \
 	append-rootfs | pad-rootfs | append-metadata | check-size $$$$(IMAGE_SIZE)
   DEVICE_PACKAGES := fritz-tffs rssileds -swconfig
+  SUPPORTED_DEVICES += fritz300e
 endef
 TARGET_DEVICES += avm_fritz300e
 
@@ -297,7 +298,6 @@ define Device/dlink_dir-859-a1
   IMAGE_SIZE := 15872k
   DEVICE_PACKAGES :=  kmod-usb-core kmod-usb2 kmod-ath10k-ct-smallbuffers ath10k-firmware-qca988x-ct
   SEAMA_SIGNATURE := wrgac37_dlink.2013gui_dir859
-  SUPPORTED_DEVICES += dir-859-a1
 endef
 TARGET_DEVICES += dlink_dir-859-a1
 
@@ -673,19 +673,6 @@ define Device/rosinson_wr818
   DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-ledtrig-usbport
 endef
 TARGET_DEVICES += rosinson_wr818
-
-define Device/ruckus_r500
-  ATH_SOC := qca9557
-  DEVICE_TITLE := Ruckus R500
-  IMAGE_SIZE := 25165k
-  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca988x-ct
-#  KERNEL_ENTRY := 0x8030d100
-#  KERNEL_LOADADDR := 0x80080000
-  KERNEL := kernel-bin | append-dtb
-  KERNEL_INITRAMFS := kernel-bin | append-dtb | uImage none
-  IMAGE/sysupgrade.bin := kernel-bin | append-dtb | lzma-no-dict | pad-to 1800000 | append-rootfs | pad-rootfs | pad-to 25165664 | check-size $$$$(IMAGE_SIZE)
-endef
-TARGET_DEVICES += ruckus_r500
 
 define Device/wd_mynet-n750
   $(Device/seama)
