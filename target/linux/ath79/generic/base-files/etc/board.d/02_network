@@ -397,6 +397,11 @@ ath79_setup_interfaces()
 		ucidef_add_switch "switch0" \
 			"0@eth0" "3:lan:1" "4:lan:2"
 		;;
+	ruckus,r500)
+		ucidef_set_interface_lan "eth0 eth1" "dhcp"
+		ucidef_add_switch "switch0" \
+			"0@eth1" "3:lan:2" "5:lan:1"
+		;;
 	*)
 		ucidef_set_interfaces_lan_wan "eth0" "eth1"
 		;;
