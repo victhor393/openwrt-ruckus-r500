@@ -112,12 +112,11 @@
 
 			partition@9b77e0 {
 				label = "rootfs";
-				reg = <0x9b77e0 0x1648820>;
+				reg = <0xb875c0 0x1648820>;
 			};
 
 
 			partition@2000000 {
-				compatible = "denx,uimage";
 				label = "firmware-backup";
 				reg = <0x02000000 0x01800000>;
 			};

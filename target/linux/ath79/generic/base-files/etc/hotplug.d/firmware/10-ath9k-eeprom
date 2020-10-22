@@ -39,8 +39,8 @@ case "$FIRMWARE" in
 		ath9k_patch_mac $(mtd_get_mac_ascii devdata "wlan24mac")
 		;;
 	ruckus,r500)
-		ath9k_eeprom_extract "art" 0x41000 0x440
-		ath9k_patch_fw_mac $(mtd_get_mac_binary "art" 0x60) 0x2
+		caldata_extract "art" 0x41000 0x440
+		ath9k_patch_mac $(macaddr_add $(mtd_get_mac_binary art 0x60) +2)
 		;;
 	engenius,ecb1750)
 		caldata_extract "art" 0x1000 0x440

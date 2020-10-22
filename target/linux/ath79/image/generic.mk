@@ -1577,7 +1577,9 @@ define Device/ruckus_r500
 #  KERNEL_LOADADDR := 0x80080000
   KERNEL := kernel-bin | append-dtb
   KERNEL_INITRAMFS := kernel-bin | append-dtb | uImage none
-  IMAGE/sysupgrade.bin := kernel-bin | append-dtb | lzma-no-dict | pad-to 1800000 | append-rootfs | pad-rootfs | pad-to 25165664 | check-size $$$$(IMAGE_SIZE)
+  IMAGES += factory.bin
+  IMAGE/sysupgrade.bin := kernel-bin | append-dtb | lzma-no-dict | pad-to 3700000 | append-rootfs
+  IMAGE/factory.bin := kernel-bin | append-dtb | lzma-no-dict | pad-to 3700000 | append-rootfs | pad-rootfs | pad-to 25165664 | check-size
 endef
 TARGET_DEVICES += ruckus_r500
 
