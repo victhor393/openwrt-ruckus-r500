@@ -155,6 +155,38 @@ define Build/check-size
 	}
 endef
 
+define Build/elecom-product-header
+	$(eval product=$(word 1,$(1)))
+	$(eval fw=$(if $(word 2,$(1)),$(word 2,$(1)),$@))
+
+	( \
+		echo -n -e "ELECOM\x00\x00$(product)" | dd bs=40 count=1 conv=sync; \
+		echo -n "0.00" | dd bs=16 count=1 conv=sync; \
+		dd if=$(fw); \
+	) > $(fw).new
+	mv $(fw).new $(fw)
+endef
+
+define Build/elx-header
+	$(eval hw_id=$(word 1,$(1)))
+	$(eval xor_pattern=$(word 2,$(1)))
+	( \
+		echo -ne "\x00\x00\x00\x00\x00\x00\x00\x03" | \
+			dd bs=42 count=1 conv=sync; \
+		hw_id="$(hw_id)"; \
+		echo -ne "\x$${hw_id:0:2}\x$${hw_id:2:2}\x$${hw_id:4:2}\x$${hw_id:6:2}" | \
+			dd bs=20 count=1 conv=sync; \
+		echo -ne "$$(printf '%08x' $$(stat -c%s $@) | fold -s2 | xargs -I {} echo \\x{} | tr -d '\n')" | \
+			dd bs=8 count=1 conv=sync; \
+		echo -ne "$$($(STAGING_DIR_HOST)/bin/mkhash md5 $@ | fold -s2 | xargs -I {} echo \\x{} | tr -d '\n')" | \
+			dd bs=58 count=1 conv=sync; \
+	) > $(KDIR)/tmp/$(DEVICE_NAME).header
+	$(call Build/xor-image,-p $(xor_pattern) -x)
+	cat $(KDIR)/tmp/$(DEVICE_NAME).header $@ > $@.new
+	mv $@.new $@
+	rm -rf $(KDIR)/tmp/$(DEVICE_NAME).header
+endef
+
 define Build/eva-image
 	$(STAGING_DIR_HOST)/bin/lzma2eva $(KERNEL_LOADADDR) $(KERNEL_LOADADDR) $@ $@.new
 	mv $@.new $@
@@ -291,8 +323,12 @@ endef
 # Convert a raw image into a $1 type image.
 # E.g. | qemu-image vdi
 define Build/qemu-image
-	qemu-img convert -f raw -O $1 $@ $@.new
-	@mv $@.new $@
+	if command -v qemu-img; then \
+		qemu-img convert -f raw -O $1 $@ $@.new; \
+		mv $@.new $@; \
+	else \
+		echo "WARNING: Install qemu-img to create VDI/VMDK images" >&2; exit 1; \
+	fi
 endef
 
 define Build/qsdk-ipq-factory-nand
@@ -394,10 +430,17 @@ define Build/tplink-v2-image
 endef
 
 define Build/uImage
-	mkimage -A $(LINUX_KARCH) \
-		-O linux -T kernel \
-		-C $(1) -a $(KERNEL_LOADADDR) -e $(if $(KERNEL_ENTRY),$(KERNEL_ENTRY),$(KERNEL_LOADADDR)) \
-		-n '$(if $(UIMAGE_NAME),$(UIMAGE_NAME),$(call toupper,$(LINUX_KARCH)) $(VERSION_DIST) Linux-$(LINUX_VERSION))' -d $@ $@.new
+	mkimage \
+		-A $(LINUX_KARCH) \
+		-O linux \
+		-T kernel \
+		-C $(word 1,$(1)) \
+		-a $(KERNEL_LOADADDR) \
+		-e $(if $(KERNEL_ENTRY),$(KERNEL_ENTRY),$(KERNEL_LOADADDR)) \
+		-n '$(if $(UIMAGE_NAME),$(UIMAGE_NAME),$(call toupper,$(LINUX_KARCH)) $(VERSION_DIST) Linux-$(LINUX_VERSION))' \
+		$(if $(UIMAGE_MAGIC),-M $(UIMAGE_MAGIC)) \
+		$(wordlist 2,$(words $(1)),$(1)) \
+		-d $@ $@.new
 	mv $@.new $@
 endef
 

@@ -9,12 +9,12 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=iptables
-PKG_VERSION:=1.8.4
+PKG_VERSION:=1.8.7
 PKG_RELEASE:=1
 
 PKG_SOURCE_URL:=https://netfilter.org/projects/iptables/files
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_HASH:=993a3a5490a544c2cbf2ef15cf7e7ed21af1845baf228318d5c36ef8827e157c
+PKG_HASH:=c109c96bb04998cd44156622d36f8e04b140701ec60531a10668cfdff5e8d8f0
 
 PKG_FIXUP:=autoreconf
 PKG_FLAGS:=nonshared

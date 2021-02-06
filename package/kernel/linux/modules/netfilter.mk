@@ -1002,7 +1002,7 @@ $(eval $(call KernelPackage,nfnetlink-queue))
 define KernelPackage/nf-conntrack-netlink
   TITLE:=Connection tracking netlink interface
   FILES:=$(LINUX_DIR)/net/netfilter/nf_conntrack_netlink.ko
-  KCONFIG:=CONFIG_NF_CT_NETLINK CONFIG_NF_CONNTRACK_EVENTS=y
+  KCONFIG:=CONFIG_NF_CT_NETLINK CONFIG_NF_CONNTRACK_EVENTS=y CONFIG_NETFILTER_NETLINK_GLUE_CT=y
   AUTOLOAD:=$(call AutoProbe,nf_conntrack_netlink)
   $(call AddDepends/nfnetlink,+kmod-ipt-conntrack)
 endef
@@ -1167,3 +1167,15 @@ define KernelPackage/nft-fib
 endef
 
 $(eval $(call KernelPackage,nft-fib))
+
+
+define KernelPackage/nft-queue
+  SUBMENU:=$(NF_MENU)
+  TITLE:=Netfilter nf_tables queue support
+  DEPENDS:=+kmod-nft-core +kmod-nfnetlink-queue
+  FILES:=$(foreach mod,$(NFT_QUEUE-m),$(LINUX_DIR)/net/$(mod).ko)
+  AUTOLOAD:=$(call AutoProbe,$(notdir $(NFT_QUEUE-m)))
+  KCONFIG:=$(KCONFIG_NFT_QUEUE)
+endef
+
+$(eval $(call KernelPackage,nft-queue))

@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hostapd
-PKG_RELEASE:=14
+PKG_RELEASE:=30
 
 PKG_SOURCE_URL:=http://w1.fi/hostap.git
 PKG_SOURCE_PROTO:=git
@@ -94,10 +94,6 @@ DRIVER_MAKEOPTS= \
 	CONFIG_IEEE80211AX=$(HOSTAPD_IEEE80211AX) \
 	CONFIG_DRIVER_WEXT=$(CONFIG_DRIVER_WEXT_SUPPORT) \
 
-ifneq ($(LOCAL_VARIANT),mini)
-  DRIVER_MAKEOPTS += CONFIG_IEEE80211W=$(CONFIG_DRIVER_11W_SUPPORT)
-endif
-
 ifeq ($(SSL_VARIANT),openssl)
   DRIVER_MAKEOPTS += CONFIG_TLS=openssl CONFIG_SAE=y
   TARGET_LDFLAGS += -lcrypto -lssl
@@ -149,6 +145,7 @@ define Package/hostapd/Default
   TITLE:=IEEE 802.1x Authenticator
   URL:=http://hostap.epitest.fi/
   DEPENDS:=$(DRV_DEPENDS) +hostapd-common +libubus
+  USERID:=network=101:network=101
   PROVIDES:=hostapd
   CONFLICTS:=$(HOSTAPD_PROVIDERS)
   HOSTAPD_PROVIDERS+=$(1)
@@ -204,6 +201,17 @@ define Package/hostapd-basic-openssl/description
  This package contains a basic IEEE 802.1x/WPA Authenticator with WPA-PSK, 802.11r and 802.11w support.
 endef
 
+define Package/hostapd-basic-wolfssl
+$(call Package/hostapd/Default,$(1))
+  TITLE+= (WPA-PSK, 11r and 11w)
+  VARIANT:=basic-wolfssl
+  DEPENDS+=+libwolfssl
+endef
+
+define Package/hostapd-basic-wolfssl/description
+ This package contains a basic IEEE 802.1x/WPA Authenticator with WPA-PSK, 802.11r and 802.11w support.
+endef
+
 define Package/hostapd-mini
 $(call Package/hostapd/Default,$(1))
   TITLE+= (WPA-PSK only)
@@ -221,6 +229,7 @@ define Package/wpad/Default
   SUBMENU:=WirelessAPD
   TITLE:=IEEE 802.1x Auth/Supplicant
   DEPENDS:=$(DRV_DEPENDS) +hostapd-common +libubus
+  USERID:=network=101:network=101
   URL:=http://hostap.epitest.fi/
   PROVIDES:=hostapd wpa-supplicant
   CONFLICTS:=$(HOSTAPD_PROVIDERS) $(SUPPLICANT_PROVIDERS)
@@ -335,6 +344,7 @@ define Package/wpa-supplicant/Default
   TITLE:=WPA Supplicant
   URL:=http://hostap.epitest.fi/wpa_supplicant/
   DEPENDS:=$(DRV_DEPENDS) +hostapd-common +libubus
+  USERID:=network=101:network=101
   PROVIDES:=wpa-supplicant
   CONFLICTS:=$(SUPPLICANT_PROVIDERS)
   SUPPLICANT_PROVIDERS+=$(1)
@@ -586,10 +596,12 @@ define Install/supplicant
 endef
 
 define Package/hostapd-common/install
-	$(INSTALL_DIR) $(1)/lib/netifd $(1)/etc/rc.button $(1)/etc/hotplug.d/ieee80211 $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/etc/capabilities $(1)/etc/rc.button $(1)/etc/hotplug.d/ieee80211 $(1)/etc/init.d $(1)/lib/netifd  $(1)/usr/share/acl.d
 	$(INSTALL_DATA) ./files/hostapd.sh $(1)/lib/netifd/hostapd.sh
 	$(INSTALL_BIN) ./files/wpad.init $(1)/etc/init.d/wpad
 	$(INSTALL_BIN) ./files/wps-hotplug.sh $(1)/etc/rc.button/wps
+	$(INSTALL_DATA) ./files/wpad_acl.json $(1)/usr/share/acl.d
+	$(INSTALL_DATA) ./files/wpad.json $(1)/etc/capabilities
 endef
 
 define Package/hostapd/install
@@ -598,6 +610,7 @@ define Package/hostapd/install
 endef
 Package/hostapd-basic/install = $(Package/hostapd/install)
 Package/hostapd-basic-openssl/install = $(Package/hostapd/install)
+Package/hostapd-basic-wolfssl/install = $(Package/hostapd/install)
 Package/hostapd-mini/install = $(Package/hostapd/install)
 Package/hostapd-openssl/install = $(Package/hostapd/install)
 Package/hostapd-wolfssl/install = $(Package/hostapd/install)
@@ -668,6 +681,7 @@ endif
 $(eval $(call BuildPackage,hostapd))
 $(eval $(call BuildPackage,hostapd-basic))
 $(eval $(call BuildPackage,hostapd-basic-openssl))
+$(eval $(call BuildPackage,hostapd-basic-wolfssl))
 $(eval $(call BuildPackage,hostapd-mini))
 $(eval $(call BuildPackage,hostapd-openssl))
 $(eval $(call BuildPackage,hostapd-wolfssl))

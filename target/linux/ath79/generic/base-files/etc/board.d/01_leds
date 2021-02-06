@@ -40,6 +40,10 @@ alfa-network,n5q)
 	ucidef_set_led_rssi "signal3" "SIGNAL3" "green:signal3" "wlan0" "50" "100"
 	ucidef_set_led_rssi "signal4" "SIGNAL4" "green:signal4" "wlan0" "75" "100"
 	;;
+alfa-network,pi-wifi4)
+	ucidef_set_led_netdev "lan_data" "LAN_DATA" "orange:lan_data" "eth0" "tx rx"
+	ucidef_set_led_netdev "lan_link" "LAN_LINK" "green:lan_link" "eth0" "link"
+	;;
 alfa-network,r36a)
 	ucidef_set_led_netdev "lan" "LAN" "blue:lan" "eth0"
 	ucidef_set_led_switch "wan" "WAN" "blue:wan" "switch0" "0x10"
@@ -141,13 +145,23 @@ comfast,cf-e560ac)
 	ucidef_set_led_switch "lan4" "LAN4" "blue:lan4" "switch0" "0x10"
 	;;
 comfast,cf-ew72|\
+openmesh,om2p-v2|\
+openmesh,om2p-hs-v1|\
+openmesh,om2p-hs-v2|\
+openmesh,om2p-hs-v3|\
+openmesh,om2p-lc|\
+openmesh,om5p|\
 telco,t1)
 	ucidef_set_led_switch "lan" "LAN" "blue:lan" "switch0" "0x02"
 	ucidef_set_led_netdev "wan" "WAN" "blue:wan" "eth1"
 	;;
 comfast,cf-wr752ac-v1|\
-engenius,ecb1750|\
-enterasys,ws-ap3705i)
+engenius,eap300-v2|\
+enterasys,ws-ap3705i|\
+openmesh,mr900-v1|\
+openmesh,mr900-v2|\
+openmesh,mr1750-v1|\
+openmesh,mr1750-v2)
 	ucidef_set_led_netdev "lan" "LAN" "blue:lan" "eth0"
 	;;
 compex,wpj344-16m|\
@@ -172,15 +186,8 @@ dlink,dap-1365-a1)
 dlink,dir-859-a1)
 	ucidef_set_led_switch "internet" "WAN" "green:internet" "switch0" "0x20"
 	;;
-engenius,enh202-v1)
-	ucidef_set_led_switch "lan" "LAN" "amber:lan" "switch0" "0x10"
-	ucidef_set_led_netdev "wan" "WAN" "green:wan" "eth0"
-	ucidef_set_rssimon "wlan0" "200000" "1"
-	ucidef_set_led_rssi "rssilow" "RSSILOW" "red:rssilow" "wlan0" "1"  "100"
-	ucidef_set_led_rssi "rssimedium" "RSSIMEDIUM" "amber:rssimedium" "wlan0" "33" "100"
-	ucidef_set_led_rssi "rssihigh" "RSSIHIGH" "green:rssihigh" "wlan0" "67" "100"
-	;;
-engenius,ens202ext-v1)
+engenius,ens202ext-v1|\
+engenius,enstationac-v1)
 	ucidef_set_rssimon "wlan0" "200000" "1"
 	ucidef_set_led_rssi "rssilow" "RSSILOW" "red:rssilow" "wlan0" "1"  "100"
 	ucidef_set_led_rssi "rssimedium" "RSSIMEDIUM" "amber:rssimedium" "wlan0" "33" "100"
@@ -195,6 +202,10 @@ etactica,eg200)
 	ucidef_set_led_oneshot "modbus" "Modbus" "red:modbus" "100" "33"
 	;;
 glinet,gl-mifi|\
+qxwlan,e600g-v2-8m|\
+qxwlan,e600g-v2-16m|\
+qxwlan,e600gac-v2-8m|\
+qxwlan,e600gac-v2-16m|\
 qxwlan,e750a-v4-8m|\
 qxwlan,e750a-v4-16m)
 	ucidef_set_led_switch "lan" "LAN" "green:lan" "switch0" "0x02"
@@ -205,6 +216,16 @@ glinet,gl-x750)
 	;;
 hak5,lan-turtle)
 	ucidef_set_led_netdev "wan" "WAN" "orange:system" "eth1"
+	;;
+meraki,mr12|\
+tplink,cpe210-v2|\
+tplink,cpe210-v3)
+	ucidef_set_led_netdev "lan" "LAN" "green:lan" "eth0"
+	ucidef_set_rssimon "wlan0" "200000" "1"
+	ucidef_set_led_rssi "rssilow" "RSSILOW" "green:link1" "wlan0" "1" "100"
+	ucidef_set_led_rssi "rssimediumlow" "RSSIMEDIUMLOW" "green:link2" "wlan0" "30" "100"
+	ucidef_set_led_rssi "rssimediumhigh" "RSSIMEDIUMHIGH" "green:link3" "wlan0" "60" "100"
+	ucidef_set_led_rssi "rssihigh" "RSSIHIGH" "green:link4" "wlan0" "80" "100"
 	;;
 meraki,mr16)
 	ucidef_set_led_netdev "wan" "WAN" "green:wan" "eth0"
@@ -220,6 +241,11 @@ netgear,wnr2200-16m)
 	ucidef_set_led_switch "lan2amber" "LAN2 (amber)" "amber:lan2" "switch0" "0x04" "0x02"
 	ucidef_set_led_switch "lan3amber" "LAN3 (amber)" "amber:lan3" "switch0" "0x08" "0x02"
 	ucidef_set_led_switch "lan4amber" "LAN4 (amber)" "amber:lan4" "switch0" "0x10" "0x02"
+	;;
+openmesh,om2p-v4|\
+openmesh,om2p-hs-v4)
+	ucidef_set_led_netdev "wan" "WAN" "blue:wan" "eth0"
+	ucidef_set_led_switch "lan" "LAN" "blue:lan" "switch0" "0x02"
 	;;
 pcs,cr3000)
 	ucidef_set_led_netdev "wan" "WAN" "blue:wan" "eth1"
@@ -290,15 +316,6 @@ tplink,wbs510-v2)
 	ucidef_set_led_rssi "rssimediumhigh" "RSSIMEDIUMHIGH" "green:link3" "wlan0" "60" "100"
 	ucidef_set_led_rssi "rssihigh" "RSSIHIGH" "green:link4" "wlan0" "80" "100"
 	;;
-tplink,cpe210-v2|\
-tplink,cpe210-v3)
-	ucidef_set_led_netdev "lan" "LAN" "green:lan" "eth0"
-	ucidef_set_rssimon "wlan0" "200000" "1"
-	ucidef_set_led_rssi "rssilow" "RSSILOW" "green:link1" "wlan0" "1" "100"
-	ucidef_set_led_rssi "rssimediumlow" "RSSIMEDIUMLOW" "green:link2" "wlan0" "30" "100"
-	ucidef_set_led_rssi "rssimediumhigh" "RSSIMEDIUMHIGH" "green:link3" "wlan0" "60" "100"
-	ucidef_set_led_rssi "rssihigh" "RSSIHIGH" "green:link4" "wlan0" "80" "100"
-	;;
 tplink,cpe510-v2|\
 tplink,cpe510-v3)
 	ucidef_set_led_netdev "lan" "LAN" "green:lan" "eth0"
@@ -340,6 +357,17 @@ tplink,tl-wr842n-v2)
 trendnet,tew-823dru)
 	ucidef_set_led_netdev "wan" "WAN" "green:planet" "eth0"
 	;;
+ubnt,bullet-ac|\
+ubnt,nanobeam-ac|\
+ubnt,nanobeam-ac-gen2|\
+ubnt,nanostation-ac|\
+ubnt,powerbeam-5ac-gen2)
+	ucidef_set_rssimon "wlan0" "200000" "1"
+	ucidef_set_led_rssi "rssilow" "RSSILOW" "blue:rssi0" "wlan0" "1" "100"
+	ucidef_set_led_rssi "rssimediumlow" "RSSIMEDIUMLOW" "blue:rssi1" "wlan0" "26" "100"
+	ucidef_set_led_rssi "rssimediumhigh" "RSSIMEDIUMHIGH" "blue:rssi2" "wlan0" "51" "100"
+	ucidef_set_led_rssi "rssihigh" "RSSIHIGH" "blue:rssi3" "wlan0" "76" "100"
+	;;
 ubnt,bullet-m-ar7240|\
 ubnt,bullet-m-ar7241|\
 ubnt,bullet-m-xw|\
@@ -356,15 +384,6 @@ ubnt,rocket-m)
 	ucidef_set_led_rssi "rssimediumlow" "RSSIMEDIUMLOW" "orange:link2" "wlan0" "26" "100"
 	ucidef_set_led_rssi "rssimediumhigh" "RSSIMEDIUMHIGH" "green:link3" "wlan0" "51" "100"
 	ucidef_set_led_rssi "rssihigh" "RSSIHIGH" "green:link4" "wlan0" "76" "100"
-	;;
-ubnt,nanobeam-ac|\
-ubnt,nanostation-ac|\
-ubnt,powerbeam-5ac-gen2)
-	ucidef_set_rssimon "wlan0" "200000" "1"
-	ucidef_set_led_rssi "rssilow" "RSSILOW" "blue:rssi0" "wlan0" "1" "100"
-	ucidef_set_led_rssi "rssimediumlow" "RSSIMEDIUMLOW" "blue:rssi1" "wlan0" "26" "100"
-	ucidef_set_led_rssi "rssimediumhigh" "RSSIMEDIUMHIGH" "blue:rssi2" "wlan0" "51" "100"
-	ucidef_set_led_rssi "rssihigh" "RSSIHIGH" "blue:rssi3" "wlan0" "76" "100"
 	;;
 wallys,dr531)
 	ucidef_set_led_netdev "lan" "LAN" "green:lan" "eth0"

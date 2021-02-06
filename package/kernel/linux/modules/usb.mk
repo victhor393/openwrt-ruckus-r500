@@ -1104,6 +1104,21 @@ define AddDepends/usb-net
 endef
 
 
+define KernelPackage/usb-net-aqc111
+  TITLE:=Support for USB-to-Ethernet Aquantia AQtion 5/2.5GbE
+  KCONFIG:=CONFIG_USB_NET_AQC111
+  FILES:=$(LINUX_DIR)/drivers/$(USBNET_DIR)/aqc111.ko
+  AUTOLOAD:=$(call AutoProbe,aqc111)
+  $(call AddDepends/usb-net)
+endef
+
+define KernelPackage/usb-net-aqc111/description
+ Support for USB-to-Ethernet Aquantia AQtion 5/2.5GbE
+endef
+
+$(eval $(call KernelPackage,usb-net-aqc111))
+
+
 define KernelPackage/usb-net-asix
   TITLE:=Kernel module for USB-to-Ethernet Asix convertors
   DEPENDS:=+kmod-libphy
@@ -1469,6 +1484,23 @@ define KernelPackage/usb-hid/description
 endef
 
 $(eval $(call KernelPackage,usb-hid))
+
+
+define KernelPackage/usb-hid-cp2112
+  SUBMENU:=$(USB_MENU)
+  TITLE:=Silicon Labs CP2112 HID USB to SMBus Master Bridge
+  KCONFIG:=CONFIG_GPIOLIB=y CONFIG_HID_CP2112
+  DEPENDS:=+kmod-usb-hid +kmod-i2c-core
+  FILES:=$(LINUX_DIR)/drivers/hid/hid-cp2112.ko
+  AUTOLOAD:=$(call AutoProbe,hid-cp2112)
+endef
+
+define KernelPackage/usb-hid-cp2112/description
+ HID device driver which registers as an i2c adapter and gpiochip to expose
+ these functions of the CP2112.
+endef
+
+$(eval $(call KernelPackage,usb-hid-cp2112))
 
 
 define KernelPackage/usb-yealink

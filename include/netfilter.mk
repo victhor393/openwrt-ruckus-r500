@@ -1,9 +1,6 @@
+# SPDX-License-Identifier: GPL-2.0-only
 #
-# Copyright (C) 2006-2014 OpenWrt.org
-#
-# This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
-#
+# Copyright (C) 2006-2020 OpenWrt.org
 
 ifneq ($(__inc_netfilter),1)
 __inc_netfilter:=1
@@ -355,6 +352,7 @@ $(eval $(if $(NF_KMOD),$(call nf_add,NFT_FIB,CONFIG_NFT_FIB_INET, $(P_XT)nft_fib
 $(eval $(if $(NF_KMOD),$(call nf_add,NFT_FIB,CONFIG_NFT_FIB_IPV4, $(P_V4)nft_fib_ipv4),))
 $(eval $(if $(NF_KMOD),$(call nf_add,NFT_FIB,CONFIG_NFT_FIB_IPV6, $(P_V6)nft_fib_ipv6),))
 
+$(eval $(if $(NF_KMOD),$(call nf_add,NFT_QUEUE,CONFIG_NFT_QUEUE, $(P_XT)nft_queue),))
 
 # userland only
 IPT_BUILTIN += $(NF_IPT-y) $(NF_IPT-m)

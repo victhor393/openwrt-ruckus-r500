@@ -1,9 +1,6 @@
+# SPDX-License-Identifier: GPL-2.0-only
 #
-# Copyright (C) 2006-2008 OpenWrt.org
-#
-# This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
-#
+# Copyright (C) 2006-2020 OpenWrt.org
 
 __package_mk:=1
 
@@ -175,9 +172,6 @@ define Build/Exports/Default
   $(1) : export CONFIG_SITE:=$$(CONFIG_SITE)
   $(1) : export PKG_CONFIG_PATH:=$$(PKG_CONFIG_PATH)
   $(1) : export PKG_CONFIG_LIBDIR:=$$(PKG_CONFIG_PATH)
-  $(if $(CONFIG_CCACHE),$(1) : export CCACHE_BASEDIR:=$(TOPDIR))
-  $(if $(CONFIG_CCACHE),$(1) : export CCACHE_DIR:=$(if $(call qstrip,$(CONFIG_CCACHE_DIR)),$(call qstrip,$(CONFIG_CCACHE_DIR)),$(TOPDIR)/.ccache))
-  $(if $(CONFIG_CCACHE),$(1) : export CCACHE_COMPILERCHECK:=%compiler% -dumpmachine; %compiler% -dumpversion)
 endef
 Build/Exports=$(Build/Exports/Default)
 
@@ -188,6 +182,8 @@ define Build/CoreTargets
   $(if $(QUILT),$(Build/Quilt))
   $(call Build/Autoclean)
   $(call DefaultTargets)
+
+  $(DL_DIR)/$(FILE): FORCE
 
   download:
 	$(foreach hook,$(Hooks/Download),

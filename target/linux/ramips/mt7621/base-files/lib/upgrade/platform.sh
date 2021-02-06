@@ -31,7 +31,7 @@ platform_do_upgrade() {
 	mikrotik,routerboard-760igs|\
 	mikrotik,routerboard-m11g|\
 	mikrotik,routerboard-m33g)
-		[ -z "$(rootfs_type)" ] && mtd erase firmware
+		[ "$(rootfs_type)" = "tmpfs" ] && mtd erase firmware
 		;;
 	asus,rt-ac65p|\
 	asus,rt-ac85p)
@@ -46,6 +46,7 @@ platform_do_upgrade() {
 	asus,rt-ac65p|\
 	asus,rt-ac85p|\
 	dlink,dir-1960-a1|\
+	dlink,dir-2640-a1|\
 	dlink,dir-2660-a1|\
 	hiwifi,hc5962|\
 	linksys,ea7300-v1|\
@@ -60,9 +61,10 @@ platform_do_upgrade() {
 	netgear,wac104|\
 	netgear,wac124|\
 	netis,wf2881|\
+	xiaomi,mi-router-3g|\
+	xiaomi,mi-router-3-pro|\
+	xiaomi,mi-router-4|\
 	xiaomi,mi-router-ac2100|\
-	xiaomi,mir3g|\
-	xiaomi,mir3p|\
 	xiaomi,redmi-router-ac2100)
 		nand_do_upgrade "$1"
 		;;

@@ -1,5 +1,3 @@
-#!/bin/sh
-
 RAM_ROOT=/tmp/root
 
 export BACKUP_FILE=sysupgrade.tgz	# file extracted by preinit
@@ -63,8 +61,20 @@ ask_bool() {
 	[ "$answer" -gt 0 ]
 }
 
+_v() {
+	[ -n "$VERBOSE" ] && [ "$VERBOSE" -ge 1 ] && echo "$*" >&2
+}
+
+_vn() {
+	[ -n "$VERBOSE" ] && [ "$VERBOSE" -ge 1 ] && echo -n "$*" >&2
+}
+
 v() {
-	[ -n "$VERBOSE" ] && [ "$VERBOSE" -ge 1 ] && echo "$@"
+	_v "$(date) upgrade: $@"
+}
+
+vn() {
+	_vn "$(date) upgrade: $@"
 }
 
 json_string() {
@@ -91,7 +101,18 @@ get_image() { # <source> [ <command> ]
 		esac
 	fi
 
-	cat "$from" 2>/dev/null | $cmd
+	$cmd <"$from"
+}
+
+get_image_dd() {
+	local from="$1"; shift
+
+	(
+		exec 3>&2
+		( exec 3>&2; get_image "$from" 2>&1 1>&3 | grep -v -F ' Broken pipe'     ) 2>&1 1>&3 \
+			| ( exec 3>&2; dd "$@" 2>&1 1>&3 | grep -v -E ' records (in|out)') 2>&1 1>&3
+		exec 3>&-
+	)
 }
 
 get_magic_word() {
@@ -107,7 +128,11 @@ get_magic_gpt() {
 }
 
 get_magic_vfat() {
-	(get_image "$@" | dd bs=1 count=3 skip=54) 2>/dev/null
+	(get_image "$@" | dd bs=3 count=1 skip=18) 2>/dev/null
+}
+
+get_magic_fat32() {
+	(get_image "$@" | dd bs=1 count=5 skip=82) 2>/dev/null
 }
 
 part_magic_efi() {
@@ -117,7 +142,8 @@ part_magic_efi() {
 
 part_magic_fat() {
 	local magic=$(get_magic_vfat "$@")
-	[ "$magic" = "FAT" ]
+	local magic_fat32=$(get_magic_fat32 "$@")
+	[ "$magic" = "FAT" ] || [ "$magic_fat32" = "FAT32" ]
 }
 
 export_bootdevice() {
@@ -274,6 +300,7 @@ indicate_upgrade() {
 # $(2): (optional) pipe command to extract firmware, e.g. dd bs=n skip=m
 default_do_upgrade() {
 	sync
+	echo 3 > /proc/sys/vm/drop_caches
 	if [ -n "$UPGRADE_BACKUP" ]; then
 		get_image "$1" "$2" | mtd $MTD_ARGS $MTD_CONFIG_ARGS -j "$UPGRADE_BACKUP" write - "${PART_NAME:-image}"
 	else

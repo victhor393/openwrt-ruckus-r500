@@ -60,9 +60,7 @@ $(eval $(call KernelPackage,bonding))
 define KernelPackage/udptunnel4
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=IPv4 UDP tunneling support
-  KCONFIG:= \
-	CONFIG_NET_UDP_TUNNEL \
-	CONFIG_VXLAN=m
+  KCONFIG:=CONFIG_NET_UDP_TUNNEL
   HIDDEN:=1
   FILES:=$(LINUX_DIR)/net/ipv4/udp_tunnel.ko
   AUTOLOAD:=$(call AutoLoad,32,udp_tunnel)
@@ -75,9 +73,7 @@ define KernelPackage/udptunnel6
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=IPv6 UDP tunneling support
   DEPENDS:=@IPV6
-  KCONFIG:= \
-	CONFIG_NET_UDP_TUNNEL \
-	CONFIG_VXLAN=m
+  KCONFIG:=CONFIG_NET_UDP_TUNNEL
   HIDDEN:=1
   FILES:=$(LINUX_DIR)/net/ipv6/ip6_udp_tunnel.ko
   AUTOLOAD:=$(call AutoLoad,32,ip6_udp_tunnel)
@@ -143,26 +139,6 @@ endef
 
 $(eval $(call KernelPackage,nsh))
 
-
-define KernelPackage/capi
-  SUBMENU:=$(NETWORK_SUPPORT_MENU)
-  TITLE:=CAPI (ISDN) Support
-  KCONFIG:= \
-	CONFIG_ISDN_CAPI \
-	CONFIG_ISDN_CAPI_CAPI20 \
-	CONFIG_ISDN_CAPIFS \
-	CONFIG_ISDN_CAPI_CAPIFS
-  FILES:= \
-	$(LINUX_DIR)/drivers/isdn/capi/kernelcapi.ko \
-	$(LINUX_DIR)/drivers/isdn/capi/capi.ko
-  AUTOLOAD:=$(call AutoLoad,30,kernelcapi capi)
-endef
-
-define KernelPackage/capi/description
- Kernel module for basic CAPI (ISDN) support
-endef
-
-$(eval $(call KernelPackage,capi))
 
 define KernelPackage/misdn
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
@@ -946,11 +922,9 @@ $(eval $(call KernelPackage,sched))
 define KernelPackage/tcp-bbr
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=BBR TCP congestion control
-  KCONFIG:= \
-	CONFIG_TCP_CONG_ADVANCED=y \
-	CONFIG_TCP_CONG_BBR
+  KCONFIG:=CONFIG_TCP_CONG_BBR
   FILES:=$(LINUX_DIR)/net/ipv4/tcp_bbr.ko
-  AUTOLOAD:=$(call AutoLoad,74,tcp_bbr)
+  AUTOLOAD:=$(call AutoProbe,tcp_bbr)
 endef
 
 define KernelPackage/tcp-bbr/description
@@ -967,6 +941,24 @@ define KernelPackage/tcp-bbr/install
 endef
 
 $(eval $(call KernelPackage,tcp-bbr))
+
+
+define KernelPackage/tcp-hybla
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=TCP-Hybla congestion control algorithm
+  KCONFIG:=CONFIG_TCP_CONG_HYBLA
+  FILES:=$(LINUX_DIR)/net/ipv4/tcp_hybla.ko
+  AUTOLOAD:=$(call AutoProbe,tcp_hybla)
+endef
+
+define KernelPackage/tcp-hybla/description
+  TCP-Hybla is a sender-side only change that eliminates penalization of
+  long-RTT, large-bandwidth connections, like when satellite legs are
+  involved, especially when sharing a common bottleneck with normal
+  terrestrial connections.
+endef
+
+$(eval $(call KernelPackage,tcp-hybla))
 
 
 define KernelPackage/ax25

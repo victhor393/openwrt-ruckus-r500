@@ -10,11 +10,11 @@ define Device/Default
   FILESYSTEMS := squashfs
   IMAGES := firmware.bin sysupgrade.bin
   KERNEL := kernel-bin | uImage none
+  KERNEL_INITRAMFS = kernel-bin | gzip | fit gzip $$(DTS_DIR)/$$(DEVICE_DTS).dtb
   KERNEL_NAME := zImage
   KERNEL_LOADADDR := 0x80008000
   KERNEL_ENTRY_POINT := 0x80008000
   DEVICE_DTS = $(lastword $(subst _, ,$(1)))
-  SUPPORTED_DEVICES = $(subst _,$(comma),$(1))
   IMAGE_SIZE := 64m
   IMAGE/sysupgrade.bin = \
     ls-append-dtb $$(DEVICE_DTS) | pad-to 1M | \

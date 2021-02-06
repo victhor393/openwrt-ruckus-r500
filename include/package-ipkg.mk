@@ -1,9 +1,6 @@
+# SPDX-License-Identifier: GPL-2.0-only
 #
-# Copyright (C) 2006-2014 OpenWrt.org
-#
-# This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
-#
+# Copyright (C) 2006-2020 OpenWrt.org
 
 ifndef DUMP
   include $(INCLUDE_DIR)/feeds.mk
@@ -218,8 +215,8 @@ $(_endef)
     ifneq ($$(CONFIG_IPK_FILES_CHECKSUMS),)
 	(cd $$(IDIR_$(1)); \
 		( \
-			find . -type f \! -path ./CONTROL/\* -exec sha256sum \{\} \; 2> /dev/null | \
-			sed 's|\([[:blank:]]\)\./|\1/|' > $$(IDIR_$(1))/CONTROL/files-sha256sum \
+			find . -type f \! -path ./CONTROL/\* -exec mkhash sha256 -n \{\} \; 2> /dev/null | \
+			sed 's|\([[:blank:]]\)\./| \1/|' > $$(IDIR_$(1))/CONTROL/files-sha256sum \
 		) || true \
 	)
     endif
@@ -232,13 +229,13 @@ $(_endef)
 		( \
 			echo "#!/bin/sh"; \
 			echo "[ \"\$$$${IPKG_NO_SCRIPT}\" = \"1\" ] && exit 0"; \
-			echo "[ -x "\$$$${IPKG_INSTROOT}/lib/functions.sh" ] || exit 0"; \
+			echo "[ -s "\$$$${IPKG_INSTROOT}/lib/functions.sh" ] || exit 0"; \
 			echo ". \$$$${IPKG_INSTROOT}/lib/functions.sh"; \
 			echo "default_postinst \$$$$0 \$$$$@"; \
 		) > postinst; \
 		( \
 			echo "#!/bin/sh"; \
-			echo "[ -x "\$$$${IPKG_INSTROOT}/lib/functions.sh" ] || exit 0"; \
+			echo "[ -s "\$$$${IPKG_INSTROOT}/lib/functions.sh" ] || exit 0"; \
 			echo ". \$$$${IPKG_INSTROOT}/lib/functions.sh"; \
 			echo "default_prerm \$$$$0 \$$$$@"; \
 		) > prerm; \

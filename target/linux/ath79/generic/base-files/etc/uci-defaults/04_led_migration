@@ -17,12 +17,35 @@ engenius,epg5000)
 glinet,gl-mifi)
 	migrate_leds ":net=:3g4g"
 	;;
+meraki,mr12)
+	migrate_leds ":wifi=:link" ":wan=:lan"
+	;;
+openmesh,mr600-v1)
+	migrate_leds ":wlan58=:wifi5g"
+	;;
+openmesh,mr600-v2)
+	migrate_leds ":wlan24=:wifi2g" ":wlan58=:wifi5g"
+	;;
+openmesh,mr900-v1|\
+openmesh,mr900-v2|\
+openmesh,mr1750-v1|\
+openmesh,mr1750-v2)
+	migrate_leds ":wlan24=:wifi2g" ":wlan58=:wifi5g" ":wan=:lan"
+	;;
 pcs,cap324)
 	migrate_leds "lan:amber=amber:lan" "lan:green=green:lan"
 	;;
 qxwlan,e558-v2-16m|\
 qxwlan,e558-v2-8m)
 	migrate_leds ":qss=:sig2"
+	;;
+qxwlan,e600g-v2-16m|\
+qxwlan,e600g-v2-8m)
+	migrate_leds "blue:wan=blue:wlan"
+	;;
+qxwlan,e600gac-v2-16m|\
+qxwlan,e600gac-v2-8m)
+	migrate_leds "orange:wan=orange:wlan2g" "green:system=blue:system"
 	;;
 qxwlan,e750a-v4-16m|\
 qxwlan,e750a-v4-8m|\

@@ -10,10 +10,10 @@ define Device/Default
   IMAGES := firmware.bin sysupgrade.bin
   FILESYSTEMS := squashfs
   KERNEL := kernel-bin | gzip | uImage gzip
+  KERNEL_INITRAMFS = kernel-bin | gzip | fit gzip $$(DTS_DIR)/$$(DEVICE_DTS).dtb
   KERNEL_LOADADDR := 0x80080000
   KERNEL_ENTRY_POINT := 0x80080000
   DEVICE_DTS = freescale/$(subst _,-,$(1))
-  SUPPORTED_DEVICES = $(subst _,$(comma),$(1))
   IMAGE_SIZE := 64m
   IMAGE/sysupgrade.bin = \
     ls-append-dtb $$(DEVICE_DTS) | pad-to 1M | \
@@ -62,6 +62,9 @@ define Device/fsl_ls1012a-rdb
   DEVICE_PACKAGES += \
     layerscape-ppfe \
     tfa-ls1012a-rdb \
+    kmod-hwmon-ina2xx \
+    kmod-iio-fxas21002c-i2c \
+    kmod-iio-fxos8700-i2c \
     kmod-ppfe
   IMAGE/firmware.bin := \
     ls-clean | \
