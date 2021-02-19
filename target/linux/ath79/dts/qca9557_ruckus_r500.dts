@@ -104,16 +104,18 @@
 				read-only;
 			};
 
-			/*partition@800000 {
-				compatible = "denx,uimage";
-				label = "firmware-main";
+			partition@800000 {
+				compatible = "openwrt,uimage", "denx,uimage";
+				label = "firmware";
+				openwrt,offset = <0xa0>;
+				openwrt,partition-magic = <0x52434b53>;
 				reg = <0x0800000 0x01800000>;
-			};*/
+			};
 
-			partition@9b77e0 {
+			/*partition@9b77e0 {
 				label = "rootfs";
 				reg = <0xb875c0 0x1648820>;
-			};
+			};*/
 
 
 			partition@2000000 {
