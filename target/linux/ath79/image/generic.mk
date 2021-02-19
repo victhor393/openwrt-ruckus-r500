@@ -1991,7 +1991,7 @@ define Device/ruckus_r500
   KERNEL_INITRAMFS := kernel-bin | append-dtb | uImage none
   IMAGES += factory.bin
   IMAGE/sysupgrade.bin := kernel-bin | append-dtb | lzma-no-dict | append-rootfs
-  IMAGE/factory.bin := kernel-bin | append-dtb | lzma-no-dict | append-rootfs | pad-rootfs | check-size
+  IMAGE/factory.bin := kernel-bin | append-dtb | lzma-no-dict | append-rootfs
 endef
 TARGET_DEVICES += ruckus_r500
 
